@@ -1,0 +1,9 @@
+extends layout 
+
+block content 
+    h1 #{title} #{bookinstance.book.title} - #{bookinstance._id}
+
+    p Are you sure you want to delete this book instance? Legality may depend on region.  
+
+    form(method='POST' action='')
+        button.btn.btn-primary Delete

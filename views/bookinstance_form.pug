@@ -1,0 +1,60 @@
+extends layout
+
+block content 
+    h1=title
+
+    form(method='POST' action='')
+        div.form-group
+            label(for='book') Book: 
+            select#book.form-control(type='select' placeholder='Select book' name='book' required='true')
+                - book_list.sort(function (a,b) { let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0; });
+                for book in book_list
+                    //- TODO - below might break
+                    option(
+                        value=book._id
+                        selected=(selected_book? (selected_book.toString()===book._id.toString() ?
+                            'selected' : 
+                            false) :
+                            false
+                        )) #{book.title}
+        div.form-group
+            label(for='imprint') Imprint: 
+            input#imprint.form-control(
+            type='text'
+            placeholder='Publisher and date information'
+            name='imprint'
+            value=(undefined===bookinstance ? '' : bookinstance.imprint)
+            )
+        div.form-group 
+            label(for='due_back') Date when book is available: 
+            input#due_back.form-control(
+            type='date'
+            name='due_back'
+            value=(bookinstance.due_back ? bookinstance.due_back.toISOString().split('T')[0] : '')
+            )
+        div.form-group 
+            label(for='status') Status:
+            select#status.form-control(
+                type='selected'
+                placeholder='Select status'
+                name='status'
+                required='true'
+            )
+                option(
+                    value='Maintenance'
+                    selected=(bookinstance ? ('Maintenance'===bookinstance.status ? 'selected' : false) : false)) Maintenance 
+                option(
+                    value='Available'
+                    selected=(bookinstance ? ('Available'===bookinstance.status ? 'selected' : false) : false)) Available 
+                option(
+                    value='Loaned'
+                    selected=(bookinstance ? ('Loaned'===bookinstance.status ? 'selected' : false) : false)) Loaned 
+                option(
+                    value='Reserved'
+                    selected=(bookinstance ? ('Reserved'===bookinstance.status ? 'selected' : false) : false)) Reserved 
+
+        button.btn.btn-primary(type='submit') Submit
+    if errors 
+        ul 
+            for error in errors 
+                li!= error.msg
